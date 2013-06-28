@@ -24,9 +24,20 @@ class Cloud_Vps_Objects {
 		$this->folder = dirname(__FILE__);
 
 		$this->load();
+
+		if( is_admin() ) {
+			include dirname( __FILE__ ) . '/admin/admin.php';
+
+			new Cloud_Vps_Objects_Admin();
+		}
 	}
 
 	public static function get_token() {
+		$option = get_option( 'cloudvps-object-settings', false );
+
+		if( ! $option )
+			return false;
+
 		if( ! self::$token ) {
 			self::$token = new Cloud_Vps_Objects_Token(
 				'',
@@ -39,6 +50,11 @@ class Cloud_Vps_Objects {
 	}
 
 	public static function get_store() {
+		$option = get_option( 'cloudvps-object-settings', false );
+
+		if( ! $option )
+			return false;
+
 		if( ! self::$store )
 			self::$store = new Cloud_Vps_Objects_Store( self::get_token() );
 
@@ -59,7 +75,10 @@ class Cloud_Vps_Objects {
 		if ( defined('WP_CLI') && WP_CLI )
 			include( $this->folder . '/inc/wp-cli.php' );
 
-		$this->cdn = new Cloud_Vps_Objects_Cdn();
+		$option = get_option( 'cloudvps-object-settings', false );
+
+		if( $option )
+			$this->cdn = new Cloud_Vps_Objects_Cdn();
 	}
 
 }
