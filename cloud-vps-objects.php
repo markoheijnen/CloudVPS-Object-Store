@@ -1,4 +1,16 @@
 <?php
+/*
+	Plugin Name: CloudVPS Object 
+	Plugin URI: http://wordpress.org/plugins/cloudvps-object-store/
+	Description: Connect your WordPress site to CloudVPS Object Store.
+	Version: 1.0-dev
+
+	Author: Marko Heijnen
+	Author URI: http://markoheijnen.com
+
+	Text Domain: cloudvps-object-store
+	Domain Path: /languages
+ */
 
 class Cloud_Vps_Objects {
 	private $folder;
