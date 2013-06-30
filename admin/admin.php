@@ -124,6 +124,18 @@ class Cloud_Vps_Objects_Admin {
 		?>
 			<h3><?php _e( 'Buckets', 'cloudvps-object-store' ); ?></h3>
 
+			<ul>
+			<?php
+			$token      = Cloud_Vps_Objects::get_token();
+			$containers = $token->containers();
+
+			foreach( $containers as $container ) {
+				// bytes
+				echo '<li>' . $container->name . ' (' . $container->count . ')</li>';
+			}
+			?>
+			</ul>
+
 		<?php
 	}
 }

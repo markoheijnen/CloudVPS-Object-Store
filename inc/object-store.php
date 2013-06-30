@@ -33,11 +33,6 @@ class Cloud_Vps_Objects_Store {
 		return false;
 	}
 
-
-	public function get() {
-
-	}
-
 	public function upload_files( $container, $files ) {
 		if( ! $this->token->success )
 			return false;

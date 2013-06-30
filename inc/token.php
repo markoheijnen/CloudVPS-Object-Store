@@ -1,15 +1,22 @@
 <?php
 
 class Cloud_Vps_Objects_Token {
+	private $username = '';
+	private $password = '';
+
 	public $success = false;
 	public $id;
 	public $expires;
 
+	public $admin_url;
 	public $public_url;
 	public $internal_url;
 	public $endpoints;
 
 	public function __construct( $username, $password, $tenant_id ) {
+		$this->username = $username;
+		$this->password = $password;
+
 		$api_url = 'https://identity.stack.cloudvps.com/v2.0/tokens';
 		$headers = array( 'Content-Type' => 'application/json' );
 		$body    = array(
@@ -43,9 +50,44 @@ class Cloud_Vps_Objects_Token {
 			$this->expires      = $data->access->token->expires;
 
 			$this->endpoints    = $data->access->serviceCatalog[0];
+			$this->admin_url    = $data->access->serviceCatalog[0]->endpoints[0]->adminURL;
 			$this->public_url   = $data->access->serviceCatalog[0]->endpoints[0]->publicURL;
 			$this->internal_url = $data->access->serviceCatalog[0]->endpoints[0]->internalURL;
 		}
+	}
+
+	public function containers() {
+		$headers = array(
+			'Content-Type' => 'application/json',
+			'Authorization' => 'Basic ' . base64_encode( $this->username . ':' . $this->password )
+		);
+
+		$url = add_query_arg( 'format', 'json', $this->admin_url );
+		$response = wp_remote_get( $url, array( 'headers' => $headers ) );
+
+		if( ! is_wp_error( $response ) && 200 == wp_remote_retrieve_response_code( $response ) ) {
+			$containers = json_decode( wp_remote_retrieve_body( $response ) );
+
+			foreach( $containers as $container ) {
+				$response2 = wp_remote_head( $this->admin_url . '/' . $container->name, array( 'headers' => $headers ) );
+
+				if( ! is_wp_error( $response2 ) && 204 == wp_remote_retrieve_response_code( $response2 ) ) {
+					$header = wp_remote_retrieve_header( $response2, 'x-container-read' );
+
+					if( '.r:*,.rlistings' == $header )
+						$container->public = __( 'Public', 'cloudvps-object-store' );
+					else
+						$container->public = __( 'Private', 'cloudvps-object-store' );
+				}
+				else {
+					$container->public = __( 'Unknown', 'cloudvps-object-store' );
+				}
+			}
+
+			return $containers;
+		}
+
+		return array();
 	}
 
 }
