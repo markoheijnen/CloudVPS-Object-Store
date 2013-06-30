@@ -28,11 +28,8 @@ class Cloud_Vps_Objects {
 
 		$this->load();
 
-		if( is_admin() ) {
-			include dirname( __FILE__ ) . '/admin/admin.php';
-
-			new Cloud_Vps_Objects_Admin();
-		}
+		if( is_admin() )
+			$this->load_admin();
 	}
 
 	public static function get_token() {
@@ -82,6 +79,12 @@ class Cloud_Vps_Objects {
 
 		if( $option )
 			$this->cdn = new Cloud_Vps_Objects_Cdn();
+	}
+
+	private function load_admin() {
+		include dirname( __FILE__ ) . '/admin/settings.php';
+
+		new Cloud_Vps_Objects_Settings();
 	}
 
 }

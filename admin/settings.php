@@ -3,7 +3,7 @@
 if ( ! defined('ABSPATH') )
 	die();
 
-class Cloud_Vps_Objects_Admin {
+class Cloud_Vps_Objects_Settings {
 
 	public function __construct() {
 		add_action( 'admin_print_styles', array( $this, 'print_stylesheets' ) );
@@ -14,7 +14,7 @@ class Cloud_Vps_Objects_Admin {
 	public function print_stylesheets() {
 		$screen = get_current_screen();
 
-		if( 'toplevel_page_cloudvps-object-store' == $screen->base ) {
+		if( strpos( $screen->base, 'cloudvps-object-store' ) ) {
 			wp_register_style( 'cloudvpsobject-style', plugins_url( 'css/settings.css', dirname( __FILE__ ) ) );
 			wp_enqueue_style( 'cloudvpsobject-style' );
 		}
@@ -41,13 +41,11 @@ class Cloud_Vps_Objects_Admin {
 			<?php
 			$option = get_option( 'cloudvps-object-settings', false );
 
-			if( ! $option ) {
+			if( ! $option )
 				$option = $this->page_settings_configure();
-			}
 
-			if( $option ) {
+			if( $option )
 				$this->page_settings_buckets();
-			}
 			?>
 
 		</div>
