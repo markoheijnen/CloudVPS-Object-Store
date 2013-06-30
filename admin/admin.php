@@ -1,7 +1,7 @@
 <?php
 
 if ( ! defined('ABSPATH') )
-    die();
+	die();
 
 class Cloud_Vps_Objects_Admin {
 

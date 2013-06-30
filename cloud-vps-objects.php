@@ -12,6 +12,9 @@
 	Domain Path: /languages
  */
 
+if ( ! defined('ABSPATH') )
+	die();
+
 class Cloud_Vps_Objects {
 	private $folder;
 

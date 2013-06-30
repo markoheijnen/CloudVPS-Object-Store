@@ -1,6 +1,8 @@
 <?php
 
-// Fix localpath to folder path.
+if ( ! defined('ABSPATH') )
+	die();
+
 
 class Cloud_Vps_Objects_Cdn {
 	private $container = 'marko';
