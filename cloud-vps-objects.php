@@ -40,9 +40,9 @@ class Cloud_Vps_Objects {
 
 		if( ! self::$token ) {
 			self::$token = new Cloud_Vps_Objects_Token(
-				'',
-				'',
-				''
+				$option['username'],
+				$option['password'],
+				$option['projectid']
 			);
 		}
 
