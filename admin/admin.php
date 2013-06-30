@@ -121,7 +121,18 @@ class Cloud_Vps_Objects_Admin {
 
 
 	public function page_settings_buckets() {
+		if ( isset( $_POST['cloudvps_object_create_nonce'] ) && wp_verify_nonce( $_POST['cloudvps_object_create_nonce'], 'cloudvps_object_create_nonce' ) ) {
+			$store = Cloud_Vps_Objects::get_store();
+
+			if( $store->create_container( $_POST['new-bucket-name'] ) )
+				echo '<div class="updated"><p><strong>' . __( 'Bucket has been created', 'cloudvps-object-store' ) . '</strong></p></div>';
+			else
+				echo '<div class="error"><p><strong>' . __( "New bucket couldn't be created. Please try again", 'cloudvps-object-store' ) . '</strong></p></div>';
+
+		}
+
 		?>
+
 			<h3><?php _e( 'Buckets', 'cloudvps-object-store' ); ?></h3>
 
 			<ul>
@@ -135,6 +146,16 @@ class Cloud_Vps_Objects_Admin {
 			}
 			?>
 			</ul>
+
+			<h4><?php _e( 'Create a new bucket', 'cloudvps-object-store' ); ?></h4>
+			<p><?php _e( 'If you need to create a new bucket, just enter the name and click "Create bucket". 
+All buckets are created as "private" buckets.', 'cloudvps-object-store' ); ?></p>
+
+			<form method="post">
+				<?php wp_nonce_field( 'cloudvps_object_create_nonce', 'cloudvps_object_create_nonce' ); ?>
+				<input type="text" name="new-bucket-name" id="new-bucket-name" value="">
+				<?php submit_button( __( 'Create bucket', 'cloudvps-object-store' ) ); ?>
+			</form>
 
 		<?php
 	}
