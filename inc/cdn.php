@@ -5,13 +5,17 @@ if ( ! defined('ABSPATH') )
 
 
 class Cloud_Vps_Objects_Cdn {
-	private $container = 'marko';
+	private $container = false;
 
 	public function __construct() {
-		add_filter( 'update_attached_file', array( $this, 'update_attached_file' ) );
-		add_filter( 'wp_update_attachment_metadata', array( $this, 'update_attachment_metadata' ) );
+		$this->container = get_option( 'cloudvps-object-cdn-container', false );
 
-		add_action( 'delete_attachment', array( $this, 'delete_attachment' ) );
+		if( $this->container ) {
+			add_filter( 'update_attached_file', array( $this, 'update_attached_file' ) );
+			add_filter( 'wp_update_attachment_metadata', array( $this, 'update_attachment_metadata' ) );
+
+			add_action( 'delete_attachment', array( $this, 'delete_attachment' ) );
+		}
 	}
 
 	/**

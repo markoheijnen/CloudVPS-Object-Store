@@ -83,8 +83,10 @@ class Cloud_Vps_Objects {
 
 	private function load_admin() {
 		include dirname( __FILE__ ) . '/admin/settings.php';
+		include dirname( __FILE__ ) . '/admin/cdn.php';
 
 		new Cloud_Vps_Objects_Settings();
+		new Cloud_Vps_Objects_Admin_Cdn();
 	}
 
 }
