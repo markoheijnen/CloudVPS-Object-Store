@@ -15,6 +15,11 @@ class Cloud_Vps_Objects_Store {
 		if( ! $this->token->success )
 			return false;
 
+		$name = sanitize_text_field( $name );
+
+		if( empty( $name ) )
+			return false;
+
 		$url = $this->token->public_url . '/' . $name;
 		$args = array(
 			'method' => 'PUT',
