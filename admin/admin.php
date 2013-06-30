@@ -131,7 +131,7 @@ class Cloud_Vps_Objects_Admin {
 
 			foreach( $containers as $container ) {
 				// bytes
-				echo '<li>' . $container->name . ' (' . $container->count . ')</li>';
+				echo '<li>' . $container->name . ' ( ' . $container->status . ' ) (' . $container->count . ')</li>';
 			}
 			?>
 			</ul>

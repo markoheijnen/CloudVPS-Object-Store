@@ -58,36 +58,44 @@ class Cloud_Vps_Objects_Token {
 
 	public function containers() {
 		$headers = array(
-			'Content-Type' => 'application/json',
 			'Authorization' => 'Basic ' . base64_encode( $this->username . ':' . $this->password )
 		);
-
 		$url = add_query_arg( 'format', 'json', $this->admin_url );
-		$response = wp_remote_get( $url, array( 'headers' => $headers ) );
 
-		if( ! is_wp_error( $response ) && 200 == wp_remote_retrieve_response_code( $response ) ) {
-			$containers = json_decode( wp_remote_retrieve_body( $response ) );
+		$cache_key  = md5( $url );
+		$containers = get_transient( $cache_key );
 
-			foreach( $containers as $container ) {
-				$response2 = wp_remote_head( $this->admin_url . '/' . $container->name, array( 'headers' => $headers ) );
+		if ( false === $containers ) {
+			$response = wp_remote_get( $url, array( 'headers' => $headers ) );
 
-				if( ! is_wp_error( $response2 ) && 204 == wp_remote_retrieve_response_code( $response2 ) ) {
-					$header = wp_remote_retrieve_header( $response2, 'x-container-read' );
+			if( ! is_wp_error( $response ) && 200 == wp_remote_retrieve_response_code( $response ) ) {
+				$containers = json_decode( wp_remote_retrieve_body( $response ) );
 
-					if( '.r:*,.rlistings' == $header )
-						$container->public = __( 'Public', 'cloudvps-object-store' );
-					else
-						$container->public = __( 'Private', 'cloudvps-object-store' );
+				foreach( $containers as $container ) {
+					$response2 = wp_remote_head( $this->admin_url . '/' . $container->name, array( 'headers' => $headers ) );
+
+					if( ! is_wp_error( $response2 ) && 204 == wp_remote_retrieve_response_code( $response2 ) ) {
+						$header = wp_remote_retrieve_header( $response2, 'x-container-read' );
+
+						if( '.r:*,.rlistings' == $header )
+							$container->status = __( 'Public', 'cloudvps-object-store' );
+						else
+							$container->status = __( 'Private', 'cloudvps-object-store' );
+					}
+					else {
+						$container->status = __( 'Unknown', 'cloudvps-object-store' );
+					}
 				}
-				else {
-					$container->public = __( 'Unknown', 'cloudvps-object-store' );
-				}
+
+				set_transient( $cache_key, $containers, DAY_IN_SECONDS - 30 );
+
+				return $containers;
 			}
 
-			return $containers;
+			return array();
 		}
 
-		return array();
+		return $containers;
 	}
 
 }
