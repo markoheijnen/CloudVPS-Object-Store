@@ -46,6 +46,9 @@ class Cloud_Vps_Objects_Admin_Cdn {
 			<form method="post" class="form-table">
 				<?php wp_nonce_field( 'cloudvps_object_cdn_set_nonce', 'cloudvps_object_cdn_set_nonce' ); ?>
 
+				<h3><?php _e( 'Choose bucket', 'cloudvps-object-store' ); ?></h3>
+				<p><?php _e( 'Choose the bucket the you want to use for the CDN.', 'cloudvps-object-store' ); ?></p>
+
 				<select name="cdn_bucket">
 					<option value=""><?php _e( 'Select bucket', 'cloudvps-object-store' ); ?></option>
 					<?php
