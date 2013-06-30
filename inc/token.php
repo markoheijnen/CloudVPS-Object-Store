@@ -65,7 +65,7 @@ class Cloud_Vps_Objects_Token {
 		);
 		$url = add_query_arg( 'format', 'json', $this->admin_url );
 
-		$cache_key  = md5( $url );
+		$cache_key  = 'containers-' . $this->id;
 		$containers = get_transient( $cache_key );
 
 		if ( false === $containers ) {
@@ -99,6 +99,10 @@ class Cloud_Vps_Objects_Token {
 		}
 
 		return $containers;
+	}
+
+	public function clean_cache() {
+		delete_transient( 'containers-' . $this->id );
 	}
 
 }

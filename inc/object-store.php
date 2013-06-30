@@ -30,8 +30,11 @@ class Cloud_Vps_Objects_Store {
 		$response      = wp_remote_request( $url, $args );
 		$response_code = wp_remote_retrieve_response_code( $response );
 
-		if( ! is_wp_error( $response ) && ( 201 == $response_code || 202 == $response_code ) )
+		if( ! is_wp_error( $response ) && ( 201 == $response_code || 202 == $response_code ) ) {
+			$this->token->clean_cache();
+
 			return true;
+		}
 
 		return false;
 	}
